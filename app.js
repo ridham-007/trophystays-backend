@@ -26,6 +26,7 @@ const LocalStrategy = require('passport-local')
 const crypto = require('crypto');
 const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
+const cors = require('cors');
 const requestTracker = require('./utils/requestTracker')
 
 const multer = require('multer')
@@ -318,8 +319,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(session(sessionConfig))
 app.use(passport.initialize())
 app.use(passport.session())
-// app.use(bodyParser.json())
+app.use(bodyParser.json())
 
+app.use(cors({
+    origin: true,
+    credentials: true,
+}));
+
+// Enable CORS for all routes
 //Keep track of requests
 // app.use(requestTracker)
 
@@ -413,7 +420,6 @@ app.post('/login', passport.authenticate('local'), checkIsVerified, async (req, 
 app.post('/register-email', async (req, res) => {
     const { email } = req.body
 
-    console.log({email})
     try {
 
         // Check if a user with this email already exists
